@@ -10,17 +10,15 @@ const modalTitle = document.getElementById ("modal-tittle");
 const modalStatus = document.getElementById ("status");
 const modalDate = document.getElementById ("createdAt");
 const modalDescription = document.getElementById ("description");
-const modalPriority = document.getElementById("priority")
-const modalLabels = document.getElementById ("label")
-
-
+const modalPriority = document.getElementById("priority");
+const modalLabels = document.getElementById (label);
+const searchInput = document.getElementById("searchInput");
 
 let allIssuesData = [];
 async function allIssues() {
     const res = await fetch("https://phi-lab-server.vercel.app/api/v1/lab/issues");
     const data = await res.json()
     allIssuesData = data.data;
-
 
     updateStatus();
     showIssues(allIssuesData);
@@ -54,6 +52,7 @@ function filterIssues(status) {
     showIssues(filtered);
 
 }
+
 function showIssues(issues) {
     issuesContainer.innerHTML = ``;
     issues.forEach(issue => {
@@ -112,10 +111,7 @@ function showIssues(issues) {
         issuesContainer.appendChild(card)
     });
 
-
 };
-
-
 
 async function openModalissue(issueId) {
     console.log(issueId, "issue");
@@ -135,11 +131,73 @@ async function openModalissue(issueId) {
     modalAuthorDetails.textContent = issue.author;
     modalStatus.textContent = issue.status;
     modalLabels.textContent = issue.labels
-    
-
-
-
 }
+
+async function loadAllIssues() {
+    const res = await fetch("https://phi-lab-server.vercel.app/api/v1/lab/issues");
+    const data = await res.json();
+
+    allIssues = data?.data || [];
+    displayIssues(allIssues);
+}
+
+function displayIssues(issues) {
+    issuesContainer.innerHTML = "";
+
+    if (issues.length === 0) {
+        issuesContainer.innerHTML = `
+            <p class="text-red-500 text-lg font-semibold">No Issue Found</p>
+        `;
+        return;
+    }
+
+    issues.forEach(issue => {
+        const div = document.createElement("div");
+        div.innerHTML = `
+            <div onclick="openModalissue('${issue._id}')" class="bg-white rounded-xl shadow p-5 border-t-4 ${issue.status === 'closed' ? 'border-purple-500' : 'border-green-500'} cursor-pointer">
+                
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-sm px-3 py-1 rounded-full bg-green-500 text-white ">${issue.status}</span>
+                    <span class="text-sm px-3 py-1 rounded-full bg-red-100 text-red-500">${issue.priority}</span>
+                </div>
+
+                <h2 class="text-2xl font-semibold mb-3">${issue.title}</h2>
+
+                <p class="text-gray-500 mb-4 line-clamp-2 ">
+                    ${issue.description.slice(0, 80)}...
+                </p>
+
+                <div class="flex flex-wrap gap-2">
+                    ${
+                        issue.labels?.map(label => `
+                            <span class="text-sm border border-yellow-400 text-yellow-500 px-3 py-1 rounded-full">
+                                ${label}
+                            </span>
+                        `).join("")
+                    || ""}
+                </div>
+            </div>
+        `;
+
+        issuesContainer.appendChild(div);
+    });
+}
+
+searchInput.addEventListener("input", function (e) {
+    const searchText = e.target.value.toLowerCase();
+
+    const searchedIssues = allIssues.filter(issue =>
+        issue.title.toLowerCase().includes(searchText) ||
+        issue.description.toLowerCase().includes(searchText) ||
+        issue.priority.toLowerCase().includes(searchText) ||
+        issue.status.toLowerCase().includes(searchText)
+    );
+
+    displayIssues(searchedIssues);
+});
+
+
+loadAllIssues();
 
 
 
