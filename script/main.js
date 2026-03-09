@@ -11,8 +11,10 @@ const modalStatus = document.getElementById ("status");
 const modalDate = document.getElementById ("createdAt");
 const modalDescription = document.getElementById ("description");
 const modalPriority = document.getElementById("priority");
-const modalLabels = document.getElementById (label);
+const modalLabels = document.getElementById ("label");
 const searchInput = document.getElementById("searchInput");
+
+const loadingSpinner = document.getElementById("loadingSpinner");
 
 let allIssuesData = [];
 async function allIssues() {
@@ -44,11 +46,13 @@ function updateStatus() {
 function filterIssues(status) {
     setActiveButton(status)
     if (status === "all") {
+        totalIssues.innerText = `${allIssuesData.length} Issues`;
         showIssues(allIssuesData);
         return;
     }
 
     const filtered = allIssuesData.filter(issue => issue.status.toLowerCase() === status);
+    totalIssues.innerText = `${filtered.length} Issues`;
     showIssues(filtered);
 
 }
@@ -134,8 +138,11 @@ async function openModalissue(issueId) {
 }
 
 async function loadAllIssues() {
+    loadingSpinner.classList.remove("hidden")
+    loadingSpinner.classList.add("flex")
     const res = await fetch("https://phi-lab-server.vercel.app/api/v1/lab/issues");
     const data = await res.json();
+    loadingSpinner.classList.add("hidden")
 
     allIssues = data?.data || [];
     displayIssues(allIssues);
