@@ -2,9 +2,12 @@ const issuesContainer = document.getElementById("issues-container")
 const openCount = document.getElementById("open-count");
 const closedCount = document.getElementById("closed-count");
 const totalIssues = document.getElementById("total-issues");
-
-
-console.log(openCount)
+const issuesModal = document.getElementById("my_modal_5");
+const modalTitle = document.getElementById ("modal-tittle");
+const modalStatus = document.getElementById ("status");
+// const modalDate = document.getElementById ("updatedAt");
+const modalDescription = document.getElementById ("description");
+const modalPriority = document.getElementById("priority")
 
 
 
@@ -13,13 +16,13 @@ async function allIssues() {
     const res = await fetch("https://phi-lab-server.vercel.app/api/v1/lab/issues");
     const data = await res.json()
     allIssuesData = data.data;
-    
+
 
     updateStatus();
     showIssues(allIssuesData);
 };
 
-function setActiveButton(status){
+function setActiveButton(status) {
 
     document.getElementById("btn-all").classList.remove("btn-primary");
     document.getElementById("btn-open").classList.remove("btn-primary");
@@ -73,16 +76,15 @@ function showIssues(issues) {
                     </span>
                 </div>
 
-                <h3 class="text-2xl font-semibold mb-3 leading-snug">
-                    ${issue.title || "No title"}
+                <h3 class="text-2xl font-semibold mb-3 leading-snug cursor-pointer" onclick="openModalissue('${issue.id}')">${issue.title}
                 </h3>
 
                 <p class="text-gray-500 mb-4 line-clamp-2">
-                    ${issue.description || "No description available"}
+                    ${issue.description}
                 </p>
 
                 <div class="flex flex-wrap gap-2 mb-5">
-                    ${(issue.labels || [])
+                    ${(issue.labels)
                 .map(
                     label => `
                             <span class="px-3 py-1 rounded-full text-sm border
@@ -99,8 +101,8 @@ function showIssues(issues) {
             </div>
 
             <div class="border-t-3  border-gray-100 px-5 py-4 text-gray-500">
-                <p>#${issue.id || 1} by ${issue.author || "john_doe"}</p>
-                <p class="mt-1">${issue.created_at || "1/15/2024"}</p>
+                <p>#${issue.id} by ${issue.author}</p>
+                <p class="mt-1">${issue.createdAt}</p>
             </div>
                 `;
         issuesContainer.appendChild(card)
@@ -108,5 +110,21 @@ function showIssues(issues) {
 
 
 };
+
+
+
+async function openModalissue(issueId) {
+    console.log(issueId, "issue");
+    const res = await fetch (`https://phi-lab-server.vercel.app/api/v1/lab/issue/${issueId}`)
+    const data =await res.json();
+    issuesModal.showModal();
+    console.log(data,'data')
+    const issue = data?.data
+    modalTitle.textContent= issue.title;
+    // modalDate.textContent = 
+}
+
+
+
 allIssues()
 
