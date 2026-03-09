@@ -52,6 +52,20 @@
 
         </div>
     </header>
+    <main class="max-w[1110px]   mt-[60px] ">
+        <section class="flex gap-2 items-center">
+            <div class="flex gap-3 mb-5">
+                <button class="btn btn-primary" onclick="filterIssues('all')">All</button>
+                <button class="btn btn-outline" onclick="filterIssues('open')">Open</button>
+                <button class="btn btn-outline" onclick="filterIssues('closed')">Closed</button>
+            </div>
+        </section>
+        <section>
+            <div id="issues-container" class="grid grid-cols-4 gap-2"></div>
+        </section>
+    </main>
+    <script src="./script/main.js"></script>
 </body>
+
 
 </html>
