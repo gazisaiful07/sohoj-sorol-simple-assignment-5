@@ -3,11 +3,15 @@ const openCount = document.getElementById("open-count");
 const closedCount = document.getElementById("closed-count");
 const totalIssues = document.getElementById("total-issues");
 const issuesModal = document.getElementById("my_modal_5");
+
+const modalAuthor = document.getElementById ("author")
+const modalAuthorDetails = document.getElementById("authorDetails");
 const modalTitle = document.getElementById ("modal-tittle");
 const modalStatus = document.getElementById ("status");
-// const modalDate = document.getElementById ("updatedAt");
+const modalDate = document.getElementById ("createdAt");
 const modalDescription = document.getElementById ("description");
 const modalPriority = document.getElementById("priority")
+const modalLabels = document.getElementById ("label")
 
 
 
@@ -72,7 +76,7 @@ function showIssues(issues) {
                     ? "bg-yellow-100 text-yellow-600"
                     : "bg-gray-100 text-gray-500"
             }">
-                        ${issue.priority || "LOW"}
+                        ${issue.priority}
                     </span>
                 </div>
 
@@ -117,11 +121,24 @@ async function openModalissue(issueId) {
     console.log(issueId, "issue");
     const res = await fetch (`https://phi-lab-server.vercel.app/api/v1/lab/issue/${issueId}`)
     const data =await res.json();
+
     issuesModal.showModal();
     console.log(data,'data')
+
     const issue = data?.data
+
     modalTitle.textContent= issue.title;
-    // modalDate.textContent = 
+    modalDate.textContent = issue.createdAt;
+    modalDescription.textContent = issue.description;
+    modalPriority.textContent = issue.priority;
+    modalAuthor.textContent = issue.author;
+    modalAuthorDetails.textContent = issue.author;
+    modalStatus.textContent = issue.status;
+    modalLabels.textContent = issue.labels
+    
+
+
+
 }
 
 
