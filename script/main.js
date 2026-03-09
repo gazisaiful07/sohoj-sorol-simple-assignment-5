@@ -140,49 +140,73 @@ async function loadAllIssues() {
     allIssues = data?.data || [];
     displayIssues(allIssues);
 }
-
 function displayIssues(issues) {
     issuesContainer.innerHTML = "";
 
-    if (issues.length === 0) {
-        issuesContainer.innerHTML = `
-            <p class="text-red-500 text-lg font-semibold">No Issue Found</p>
-        `;
-        return;
-    }
-
     issues.forEach(issue => {
+
+        const isOpen = issue.status === "open";
+
         const div = document.createElement("div");
+
+        div.className = "bg-white rounded-xl shadow";
+
         div.innerHTML = `
-            <div onclick="openModalissue('${issue._id}')" class="bg-white rounded-xl shadow p-5 border-t-4 ${issue.status === 'closed' ? 'border-purple-500' : 'border-green-500'} cursor-pointer">
-                
+            <div class="p-5">
                 <div class="flex justify-between items-center mb-4">
-                    <span class="text-sm px-3 py-1 rounded-full bg-green-500 text-white ">${issue.status}</span>
-                    <span class="text-sm px-3 py-1 rounded-full bg-red-100 text-red-500">${issue.priority}</span>
+                    
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm 
+                        ${isOpen ? "bg-green-100 text-green-600" : "bg-purple-100 text-purple-600"}">
+                        
+                        ${isOpen 
+                            ? '<img src="./assets/Open-Status.png" />' 
+                            : '<i class="fa-solid fa-circle-check"></i>'}
+                    
+                    </div>
+
+                    <span class="px-4 py-1 rounded-full text-sm font-medium
+                        ${issue.priority?.toLowerCase() === "high"
+                            ? "bg-red-100 text-red-500"
+                            : issue.priority?.toLowerCase() === "medium"
+                            ? "bg-yellow-100 text-yellow-600"
+                            : "bg-gray-100 text-gray-500"
+                        }">
+                        ${issue.priority}
+                    </span>
+
                 </div>
 
-                <h2 class="text-2xl font-semibold mb-3">${issue.title}</h2>
+                <h3 class="text-2xl font-semibold mb-3 leading-snug cursor-pointer"
+                    onclick="openModalissue('${issue.id}')">
+                    ${issue.title}
+                </h3>
 
-                <p class="text-gray-500 mb-4 line-clamp-2 ">
-                    ${issue.description.slice(0, 80)}...
+                <p class="text-gray-500 mb-4 line-clamp-2">
+                    ${issue.description}
                 </p>
 
-                <div class="flex flex-wrap gap-2">
-                    ${
-                        issue.labels?.map(label => `
-                            <span class="text-sm border border-yellow-400 text-yellow-500 px-3 py-1 rounded-full">
-                                ${label}
-                            </span>
-                        `).join("")
-                    || ""}
+                <div class="flex flex-wrap gap-2 mb-5">
+                    ${issue.labels.map(label => `
+                        <span class="px-3 py-1 rounded-full text-sm border
+                            ${label.toLowerCase().includes("bug")
+                                ? "bg-red-50 text-red-500 border-red-200"
+                                : "bg-yellow-50 text-yellow-600 border-yellow-300"
+                            }">
+                            ${label}
+                        </span>
+                    `).join("")}
                 </div>
+            </div>
+
+            <div class="border-t border-gray-100 px-5 py-4 text-gray-500">
+                <p>#${issue.id} by ${issue.author}</p>
+                <p class="mt-1">${issue.createdAt}</p>
             </div>
         `;
 
         issuesContainer.appendChild(div);
     });
 }
-
 searchInput.addEventListener("input", function (e) {
     const searchText = e.target.value.toLowerCase();
 
@@ -195,8 +219,6 @@ searchInput.addEventListener("input", function (e) {
 
     displayIssues(searchedIssues);
 });
-
-
 loadAllIssues();
 
 
