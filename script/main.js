@@ -3,6 +3,7 @@ const openCount = document.getElementById("open-count");
 const closedCount = document.getElementById("closed-count");
 const totalIssues = document.getElementById("total-issues");
 
+
 console.log(openCount)
 
 
@@ -51,12 +52,12 @@ function showIssues(issues) {
     issues.forEach(issue => {
         const card = document.createElement("div")
         const isOpen = issue.status.toLowerCase() === "open";
-        card.className = card.className = `bg-white rounded-xl shadow-sm border border-blue-50 bg-white overflow-hidden  gap-20
+        card.className = card.className = `bg-white rounded-xl shadow-sm border border-blue-50 bg-white overflow-hidden  
                         ${isOpen ? "border-t-4 border-t-green-500" : "border-t-4 border-t-purple-500 border"}`;
         card.innerHTML = `
                 <div class="p-5">
                 <div class="flex justify-between items-center mb-4 ">
-                    <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm gap-20
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm 
                         ${isOpen ? "bg-green-100 text-green-600" : "bg-purple-100 text-purple-600"}">
                         ${isOpen ? "<image src=./assets/Open-Status.png>" : '<i class="fa-solid fa-circle-check"></i>'}
                     </div>
@@ -76,7 +77,7 @@ function showIssues(issues) {
                     ${issue.title || "No title"}
                 </h3>
 
-                <p class="text-gray-500 mb-4">
+                <p class="text-gray-500 mb-4 line-clamp-2">
                     ${issue.description || "No description available"}
                 </p>
 
